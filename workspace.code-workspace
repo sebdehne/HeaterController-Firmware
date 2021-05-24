@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"name": "GarageAndHeaterController",
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"cstddef": "cpp",
+			"cmath": "cpp"
+		}
+	}
+}
