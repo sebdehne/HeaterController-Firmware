@@ -100,7 +100,7 @@ void loop()
   }
   else if (requestType == 13)
   {
-    // trun on heater
+    // turn on heater
     Log.log("Turning heater on");
     digitalWrite(HEATER_RELAY_PIN, HIGH);
     SmartHomeServerClient.sendAck(15);
@@ -138,7 +138,8 @@ void loop()
         ch2Adc > 200,
         lightAdc > 200,
         digitalRead(HEATER_RELAY_PIN),
-        FIRMWARE_VERSION);
+        FIRMWARE_VERSION,
+        tempReading.readError);
 
     // set mac pause to prevent it from timing out
     RN2483.sendCommandRaw("mac pause", buf, sizeof(buf));

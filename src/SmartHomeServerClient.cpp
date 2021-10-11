@@ -57,17 +57,19 @@ bool SmartHomeServerClientClass::sendData(
     bool garageDoorCh2,
     bool garageLightOn,
     bool heaterOn,
-    uint8_t firmwareVersion)
+    uint8_t firmwareVersion,
+    bool temperatureError)
 {
-    uint8_t payload[4 + 4 + 1];
+    uint8_t payload[4 + 4 + 2];
     writeInt32(temp, payload, 0);
     payload[4] = garageDoorCh1;
     payload[5] = garageDoorCh2;
     payload[6] = garageLightOn;
     payload[7] = heaterOn;
     payload[8] = firmwareVersion;
+    payload[9] = temperatureError;
 
-    return sendMessage(17, payload, sizeof(payload));
+    return sendMessage(20, payload, sizeof(payload));
 }
 
 InboundPacketHeader SmartHomeServerClientClass::receiveRequest(
