@@ -58,7 +58,7 @@ bool SmartHomeServerClientClass::sendData(
     bool garageLightOn,
     bool heaterOn,
     uint8_t firmwareVersion,
-    bool temperatureError)
+    uint8_t temperatureError)
 {
     uint8_t payload[4 + 4 + 2];
     writeInt32(temp, payload, 0);

@@ -76,8 +76,8 @@ void setup()
 void loop()
 {
 
-  uint8_t firmwareInfoData[8];
-  InboundPacketHeader inboundPacketHeader = SmartHomeServerClient.receiveRequest(firmwareInfoData, sizeof(firmwareInfoData));
+  uint8_t requestPayload[8];
+  InboundPacketHeader inboundPacketHeader = SmartHomeServerClient.receiveRequest(requestPayload, sizeof(requestPayload));
   int requestType = inboundPacketHeader.type;
 
   if (requestType == 10)
@@ -116,16 +116,27 @@ void loop()
     ledOff();
     ledStatusOn = false;
   }
-  else if (requestType == 16)
+  else if (requestType == 22)
   {
     blink(1, 250); // give server some time to switch to RX mode
 
+    bool shouldReadTem = requestPayload[0] > 0;
+
     // data request
-    TempReading tempReading = MCP9808.readTemp();
-    if (tempReading.readError)
+    TempReading tempReading;
+    tempReading.readError = 255;
+
+    int count = 10;
+    while (shouldReadTem && --count > 0)
     {
-      Log.log("Could not read temperature - sensor missing?");
+      tempReading = MCP9808.readTemp();
+      if (tempReading.readError == 0)
+      {
+        break;
+      }
+      Log.log("Could not read temperature - retrying");
     }
+
     Log.log("Sending data");
 
     int lightAdc = analogRead(A0);
@@ -148,8 +159,8 @@ void loop()
   {
     FirmwareInfoResponse firmwareInfoResponse;
     firmwareInfoResponse.receiveError = false;
-    firmwareInfoResponse.totalLength = toUInt(firmwareInfoData, 0);
-    firmwareInfoResponse.crc32 = toUInt(firmwareInfoData, 4);
+    firmwareInfoResponse.totalLength = toUInt(requestPayload, 0);
+    firmwareInfoResponse.crc32 = toUInt(requestPayload, 4);
     Log.log("Upgrading firmware");
     SmartHomeServerClient.upgradeFirmware(firmwareInfoResponse);
   }

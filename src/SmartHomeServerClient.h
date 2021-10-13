@@ -50,7 +50,7 @@ public:
         bool garageLightOn,
         bool heaterOn,
         uint8_t firmwareVersion,
-        bool temperatureError);
+        uint8_t temperatureError);
 
     InboundPacketHeader receiveRequest(uint8_t *payloadBuffer, size_t payloadBufferLength);
     void upgradeFirmware(FirmwareInfoResponse firmwareInfoResponse);

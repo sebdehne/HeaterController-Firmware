@@ -8,10 +8,13 @@ MCP9808Class::MCP9808Class()
 TempReading MCP9808Class::readTemp()
 {
     TempReading tempReading;
-    tempReading.readError = true;
+    tempReading.readError = 255;
 
-    if (!selectRegister(5))
+    uint8_t selectRegResult = selectRegister(5);
+
+    if (selectRegResult != 0)
     {
+        tempReading.readError = selectRegResult + 10;
         return tempReading;
     }
 
@@ -19,6 +22,7 @@ TempReading MCP9808Class::readTemp()
 
     if (!Wire.available())
     {
+        tempReading.readError = 21;
         Serial.println("Could not read msb");
         return tempReading;
     }
@@ -27,6 +31,7 @@ TempReading MCP9808Class::readTemp()
 
     if (!Wire.available())
     {
+        tempReading.readError = 22;
         Serial.println("Could not read lsb");
         return tempReading;
     }
@@ -56,20 +61,11 @@ TempReading MCP9808Class::readTemp()
     return tempReading;
 }
 
-bool MCP9808Class::selectRegister(unsigned char reg)
+uint8_t MCP9808Class::selectRegister(unsigned char reg)
 {
     Wire.beginTransmission(i2c_addr);
     Wire.write(reg);
-    uint8_t result = Wire.endTransmission(false);
-    if (result != 0)
-    {
-        Log.log("Error setAddrForRead()");
-        return false;
-    }
-    else
-    {
-        return true;
-    }
+    return Wire.endTransmission(false);
 }
 
 MCP9808Class MCP9808;

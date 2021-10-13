@@ -5,7 +5,7 @@
 
 struct TempReading
 {
-    bool readError;
+    uint8_t readError;
     int temperature;
 };
 
@@ -15,7 +15,7 @@ class MCP9808Class
 private:
     const unsigned char i2c_addr = 24;
 
-    bool selectRegister(unsigned char reg);
+    uint8_t selectRegister(unsigned char reg);
 public:
     MCP9808Class();
 
