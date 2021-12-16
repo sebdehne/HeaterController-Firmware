@@ -63,9 +63,26 @@ TempReading MCP9808Class::readTemp()
 
 uint8_t MCP9808Class::selectRegister(unsigned char reg)
 {
-    Wire.beginTransmission(i2c_addr);
-    Wire.write(reg);
-    return Wire.endTransmission(false);
+
+    int count = 10;
+    uint8_t result;
+    while (--count > 0)
+    {
+        Wire.beginTransmission(i2c_addr);
+        Wire.write(reg);
+        result = Wire.endTransmission(false);
+        if (result == 0)
+        {
+            break;
+        }
+        Wire.end();
+        delay(100);
+        Wire.begin();
+        delay(100);
+        Log.log("Could not selectRegister - retrying");
+    }
+
+    return result;
 }
 
 MCP9808Class MCP9808;

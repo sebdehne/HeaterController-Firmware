@@ -120,21 +120,15 @@ void loop()
   {
     blink(1, 250); // give server some time to switch to RX mode
 
-    bool shouldReadTem = requestPayload[0] > 0;
+    bool shouldReadTemp = requestPayload[0] > 0;
 
     // data request
     TempReading tempReading;
     tempReading.readError = 255;
 
-    int count = 10;
-    while (shouldReadTem && --count > 0)
+    if (shouldReadTemp)
     {
       tempReading = MCP9808.readTemp();
-      if (tempReading.readError == 0)
-      {
-        break;
-      }
-      Log.log("Could not read temperature - retrying");
     }
 
     Log.log("Sending data");
