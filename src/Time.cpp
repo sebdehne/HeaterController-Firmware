@@ -11,7 +11,7 @@ void TimeClass::begin()
 
 unsigned long TimeClass::calcSecondsSince2000(DateTime dateTime)
 {
-    unsigned long leapYears = (dateTime.year / 4) + 1;
+    unsigned long leapYears = (dateTime.year / 4);
     unsigned long nonLeapYears = dateTime.year - leapYears;
     unsigned long days = (leapYears * 366) + (nonLeapYears * 365);
 
