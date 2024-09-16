@@ -7,8 +7,6 @@
 #include "utils.h"
 
 #define HEATER_RELAY_PIN 4
-#define GARAGE_DOOR_CH1_CTRL 5
-#define GARAGE_DOOR_CH2_CTRL 6
 
 bool ledStatusOn = false;
 void blink(int times, int delayMS);
@@ -30,10 +28,6 @@ void setup()
 
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(HEATER_RELAY_PIN, OUTPUT);
-  pinMode(GARAGE_DOOR_CH1_CTRL, OUTPUT);
-  pinMode(GARAGE_DOOR_CH2_CTRL, OUTPUT);
-  digitalWrite(GARAGE_DOOR_CH1_CTRL, LOW);
-  digitalWrite(GARAGE_DOOR_CH2_CTRL, LOW);
 
   Time.begin();
   FlashUtils.init();
@@ -80,25 +74,7 @@ void loop()
   InboundPacketHeader inboundPacketHeader = SmartHomeServerClient.receiveRequest(requestPayload, sizeof(requestPayload));
   int requestType = inboundPacketHeader.type;
 
-  if (requestType == 10)
-  {
-    // open door
-    Log.log("Opening door");
-    SmartHomeServerClient.sendAck(12);
-    digitalWrite(GARAGE_DOOR_CH1_CTRL, HIGH);
-    blink(2, 250);
-    digitalWrite(GARAGE_DOOR_CH1_CTRL, LOW);
-  }
-  else if (requestType == 11)
-  {
-    // close door
-    Log.log("Closing door");
-    SmartHomeServerClient.sendAck(12);
-    digitalWrite(GARAGE_DOOR_CH2_CTRL, HIGH);
-    blink(3, 250);
-    digitalWrite(GARAGE_DOOR_CH2_CTRL, LOW);
-  }
-  else if (requestType == 13)
+  if (requestType == 13)
   {
     // turn on heater
     Log.log("Turning heater on");
@@ -133,15 +109,8 @@ void loop()
 
     Log.log("Sending data");
 
-    int lightAdc = analogRead(A0);
-    int ch1Adc = analogRead(A1);
-    int ch2Adc = analogRead(A2);
-
     SmartHomeServerClient.sendData(
         tempReading.temperature,
-        ch1Adc > 200,
-        ch2Adc > 200,
-        lightAdc > 200,
         digitalRead(HEATER_RELAY_PIN),
         FIRMWARE_VERSION,
         tempReading.readError);
@@ -157,12 +126,6 @@ void loop()
     firmwareInfoResponse.crc32 = toUInt(requestPayload, 4);
     Log.log("Upgrading firmware");
     SmartHomeServerClient.upgradeFirmware(firmwareInfoResponse);
-  }
-  else if (requestType == 8)
-  {
-    Time.setTime(inboundPacketHeader.timestamp);
-    Log.log("Adjusted time");
-    SmartHomeServerClient.sendAck(9);
   }
   else
   {

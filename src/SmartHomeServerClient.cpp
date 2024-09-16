@@ -53,18 +53,15 @@ bool SmartHomeServerClientClass::sendAck(uint8_t type)
 
 bool SmartHomeServerClientClass::sendData(
     int temp,
-    bool garageDoorCh1,
-    bool garageDoorCh2,
-    bool garageLightOn,
     bool heaterOn,
     uint8_t firmwareVersion,
     uint8_t temperatureError)
 {
     uint8_t payload[4 + 4 + 2];
     writeInt32(temp, payload, 0);
-    payload[4] = garageDoorCh1;
-    payload[5] = garageDoorCh2;
-    payload[6] = garageLightOn;
+    payload[4] = 0;
+    payload[5] = 0;
+    payload[6] = 0;
     payload[7] = heaterOn;
     payload[8] = firmwareVersion;
     payload[9] = temperatureError;

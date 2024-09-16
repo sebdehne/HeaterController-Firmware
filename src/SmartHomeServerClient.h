@@ -45,9 +45,6 @@ public:
 
     bool sendData(
         int temp,
-        bool garageDoorCh1,
-        bool garageDoorCh2,
-        bool garageLightOn,
         bool heaterOn,
         uint8_t firmwareVersion,
         uint8_t temperatureError);
