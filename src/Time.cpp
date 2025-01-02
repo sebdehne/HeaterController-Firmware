@@ -11,9 +11,18 @@ void TimeClass::begin()
 
 unsigned long TimeClass::calcSecondsSince2000(DateTime dateTime)
 {
-    unsigned long leapYears = (dateTime.year / 4);
-    unsigned long nonLeapYears = dateTime.year - leapYears;
-    unsigned long days = (leapYears * 366) + (nonLeapYears * 365);
+    unsigned long days = 0;
+    for (unsigned int i = 0; i < dateTime.year; i++)
+    {
+        if (i % 4)
+        {
+            days += 365;
+        }
+        else
+        {
+            days += 366;
+        }
+    }
 
     for (int i = 1; i < dateTime.month; i++)
     {
@@ -52,24 +61,23 @@ DateTime TimeClass::calcDateTime(unsigned long secondsSince2000)
     dateTime.minutes = remainingSeconds / 60;
     dateTime.seconds = remainingSeconds % 60;
 
-    int fourYearsPeriodes = days / (3 * 365 + 366);
-    days = days % (3 * 365 + 366);
+    int fourYearsPeriodes = days / days4Years;
+    days = days % days4Years;
+
     dateTime.year = fourYearsPeriodes * 4;
-    if (days > 366)
+    for (unsigned int i = 0; i < sizeof(daysInYears); i++)
     {
-        dateTime.year += 1;
-        days -= 366;
+        if (days >= daysInYears[i])
+        {
+            dateTime.year += 1;
+            days -= daysInYears[i];
+        }
+        else
+        {
+            break;
+        }
     }
-    if (days > 365)
-    {
-        dateTime.year += 1;
-        days -= 365;
-    }
-    if (days > 365)
-    {
-        dateTime.year += 1;
-        days -= 365;
-    }
+
     dateTime.month = 1;
     unsigned daysInMonth;
     while (1)
@@ -150,7 +158,8 @@ void TimeClass::print2digits(int number)
     Serial.print(number);
 }
 
-DateTime TimeClass::readTime() {
+DateTime TimeClass::readTime()
+{
     DateTime dateTime;
     dateTime.error = false;
     dateTime.hour = rtc.getHours();

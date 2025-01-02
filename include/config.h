@@ -7,6 +7,8 @@
 // note: when using DEBUG - power is not removed and the ChipCap2 does not make new measurements
 // #define DEBUG
 
+#define RESET_IF_NO_MSG_FROM_SERVER_MS 120000
+
 #define LORA_RETRY_DELAY random(0, 500)
 #define LORA_RETRY_COUNT 5
 #define LORA_RETRY_FIRMWARE_COUNT 30

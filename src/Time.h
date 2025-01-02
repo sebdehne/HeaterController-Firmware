@@ -21,6 +21,8 @@ class TimeClass
 {
 private:
     RTCZero rtc;
+    int days4Years = 3 * 365 + 366;
+    unsigned int daysInYears[3] = {366, 365, 365};
 
     unsigned long calcSecondsSince2000(DateTime dateTime);
     DateTime calcDateTime(unsigned long secondsSince2000);
